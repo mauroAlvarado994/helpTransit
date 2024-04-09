@@ -124,6 +124,8 @@ function getColorForStatus(busStatus) {
 }
 
 function createCard(routeName, expectedLeaveTime, busStatus, countDown) {
+    ClearHTML(container);
+
     const card = document.createElement('div');
     card.classList.add('card', 'mt-3');
 
@@ -187,7 +189,8 @@ function createCard(routeName, expectedLeaveTime, busStatus, countDown) {
     netBusCol.appendChild(netBusLabel);
 
     const netBusValue = document.createElement('p');
-    netBusValue.textContent = expectedLeaveTime;
+    const horaSalida = expectedLeaveTime.split(" ")[0]; // Aquí se extrae solo la hora
+    netBusValue.textContent = horaSalida;
     netBusValue.classList.add('text-truncate', 'text-primary');
     netBusCol.appendChild(netBusValue);
 
