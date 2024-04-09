@@ -2,6 +2,7 @@ const busStop = document.querySelector("#bStop");
 const busNumber = document.querySelector("#bNumber");
 const message = document.querySelector("#alerts");
 const container = document.querySelector("#container");
+const addStopBus = document.querySelector("#btnAddStop")
 
 function ClearHTML(result) {
     if (result && result.firstChild) {
@@ -112,117 +113,135 @@ function getStatusDescription(busStatus) {
 
 function getColorForStatus(busStatus) {
     if (busStatus === '-') {
-        return 'red';
+        return 'text-danger';
     } else if (busStatus === '*') {
-        return 'green';
+        return 'text-success';
     } else if (busStatus === '+') {
-        return 'blue';
+        return 'text-primary';
     } else {
-        return 'brown'; // Color por defecto si el estado no es reconocido
+        return 'text-danger'; // Color por defecto si el estado no es reconocido
     }
 }
 
 function createCard(routeName, expectedLeaveTime, busStatus, countDown) {
-    const row = document.createElement('div');
-    row.classList.add('row', 'card', 'd-flex', 'justify-content-center', 'm-3');
+    const card = document.createElement('div');
+    card.classList.add('card', 'mt-3');
 
-    // Contenedor para la información del título y la fila de texto
-    const titleContainer = document.createElement('div');
-    titleContainer.classList.add('col-12', 'text-center', 'mb-3');
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
 
-    const stopInfoRow = document.createElement('div');
-    stopInfoRow.classList.add('row', 'mt-3');
+    const stopRow = document.createElement('div');
+    stopRow.classList.add('row', 'text-center');
 
-    const busStopHeading = document.createElement('p');
-    busStopHeading.textContent = `Bus Stop: ${busStop.value}`
-    busStopHeading.classList.add('fw-bold', 'col-6');
+    const stopCol = document.createElement('div');
+    stopCol.classList.add('col-6');
 
-    const busNameHeading = document.createElement('p');
-    busNameHeading.textContent = `Bus Number: ${busNumber.value}`
-    busNameHeading.classList.add('fw-bold', 'col-6')
+    const stopLabel = document.createElement('p');
+    stopLabel.textContent = 'Bus Stop:';
+    stopLabel.classList.add('fw-bold')
+    stopCol.appendChild(stopLabel);
 
-    // Crear párrafo para "Route Name" y centrarlo
-    const routeNamePara = document.createElement('p');
-    routeNamePara.textContent = 'Route Name:';
-    routeNamePara.classList.add('fs-6', 'mb-0', 'fw-bold'); // Agregar negrita
-    titleContainer.appendChild(routeNamePara);
+    const stopValue = document.createElement('p');
+    stopValue.textContent = busStop.value;
+    stopValue.classList.add('text-truncate', 'text-primary');
+    stopCol.appendChild(stopValue);
 
-    // Crear párrafo para el nombre de la ruta y centrarlo
-    const routeNameText = document.createElement('p');
-    routeNameText.textContent = routeName;
-    routeNameText.classList.add('fs-5', 'mb-3'); // Ajustar el tamaño del texto y el espacio inferior
-    titleContainer.appendChild(routeNameText);
+    const busNumCol = document.createElement('div');
+    busNumCol.classList.add('col-6');
 
-    // Crear fila para "Next Bus Time", "Bus Status", y "Countdown"
-    const infoRow = document.createElement('div');
-    infoRow.classList.add('row', 'mb-2');
+    const busNumLabel = document.createElement('p');
+    busNumLabel.textContent = 'Bus number:';
+    busNumLabel.classList.add('fw-bold')
+    busNumCol.appendChild(busNumLabel);
 
-    // Columna para "Next Bus Time"
-    const timeCol = document.createElement('div');
-    timeCol.classList.add('col', 'text-center'); // Centrar el texto
+    const busNumValue = document.createElement('p');
+    busNumValue.textContent = busNumber.value;
+    busNumValue.classList.add('text-truncate', 'text-primary');
+    busNumCol.appendChild(busNumValue);
 
-    const timePara = document.createElement('p');
-    timePara.textContent = 'Next Bus Time:';
-    timePara.classList.add('fs-6', 'mb-0');
+    stopRow.appendChild(stopCol);
+    stopRow.appendChild(busNumCol);
 
-    const timeText = document.createElement('p');
-    timeText.textContent = expectedLeaveTime;
-    timeText.classList.add('fs-6', 'mb-0');
-    timeText.style.color = 'blue'; // Color azul
+    const routeRow = document.createElement('div');
+    routeRow.classList.add('row', 'text-center');
 
-    timeCol.appendChild(timePara);
-    timeCol.appendChild(timeText);
+    const routeLabel = document.createElement('p');
+    routeLabel.textContent = 'Route Name:';
+    routeLabel.classList.add('fw-bold')
+    routeRow.appendChild(routeLabel);
 
-    // Columna para "Bus Status"
+    const routeValue = document.createElement('p');
+    routeValue.textContent = routeName;
+    routeValue.classList.add('text-truncate', 'text-primary');
+    routeRow.appendChild(routeValue);
+
+    const timeRow = document.createElement('div');
+    timeRow.classList.add('row', 'text-center');
+
+    const netBusCol = document.createElement('div');
+    netBusCol.classList.add('col-4');
+
+    const netBusLabel = document.createElement('p');
+    netBusLabel.textContent = 'Next Bus:';
+    netBusLabel.classList.add('fw-bold')
+    netBusCol.appendChild(netBusLabel);
+
+    const netBusValue = document.createElement('p');
+    netBusValue.textContent = expectedLeaveTime;
+    netBusValue.classList.add('text-truncate', 'text-primary');
+    netBusCol.appendChild(netBusValue);
+
     const statusCol = document.createElement('div');
-    statusCol.classList.add('col', 'text-center'); // Centrar el texto
+    statusCol.classList.add('col-4');
 
-    const statusPara = document.createElement('p');
-    statusPara.textContent = 'Bus Status:';
-    statusPara.classList.add('fs-6', 'mb-0');
+    const statusLabel = document.createElement('p');
+    statusLabel.textContent = 'Bus Status:';
+    statusLabel.classList.add('fw-bold')
+    statusCol.appendChild(statusLabel);
 
-    const statusText = document.createElement('p');
-    statusText.textContent = getStatusDescription(busStatus);
-    statusText.classList.add('fs-6', 'mb-0');
-    statusText.style.color = getColorForStatus(busStatus); // Mantener el color según el estado
+    const statusValue = document.createElement('p');
+    statusValue.textContent = getStatusDescription(busStatus);
+    statusValue.classList.add(`${getColorForStatus(busStatus)}`)
+    statusCol.appendChild(statusValue);
 
-    statusCol.appendChild(statusPara);
-    statusCol.appendChild(statusText);
+    const timeLeftCol = document.createElement('div');
+    timeLeftCol.classList.add('col-4');
 
-    // Columna para "Countdown"
-    const countdownCol = document.createElement('div');
-    countdownCol.classList.add('col', 'text-center'); // Centrar el texto
+    const timeLeftLabel = document.createElement('p');
+    timeLeftLabel.textContent = 'Time Left:';
+    timeLeftLabel.classList.add('fw-bold')
+    timeLeftCol.appendChild(timeLeftLabel);
 
-    const countdownPara = document.createElement('p');
-    countdownPara.textContent = 'Time Left to Leave:';
-    countdownPara.classList.add('fs-6', 'mb-0');
+    const timeLeftValue = document.createElement('p');
+    timeLeftValue.textContent = `${countDown} Min`;
+    timeLeftValue.classList.add('text-truncate', 'text-primary');
+    timeLeftCol.appendChild(timeLeftValue);
 
-    const countdownText = document.createElement('p');
-    countdownText.textContent = countDown;
-    countdownText.classList.add('fs-6', 'mb-0');
-    countdownText.style.color = 'blue'; // Color azul
+    timeRow.appendChild(netBusCol);
+    timeRow.appendChild(statusCol);
+    timeRow.appendChild(timeLeftCol);
 
-    countdownCol.appendChild(countdownPara);
-    countdownCol.appendChild(countdownText);
+    const lastUpdateRow = document.createElement('div');
+    lastUpdateRow.classList.add('row', 'text-center');
 
-    // Agregar columnas a la fila de información
-    infoRow.appendChild(timeCol);
-    infoRow.appendChild(statusCol);
-    infoRow.appendChild(countdownCol);
+    const lastUpdateLabel = document.createElement('p');
+    lastUpdateLabel.textContent = 'Last Update:';
+    lastUpdateLabel.classList.add('fw-bold')
+    lastUpdateRow.appendChild(lastUpdateLabel);
 
-    // Agregar fila de información al contenedor del título
-    titleContainer.appendChild(infoRow);
+    const lastUpdateValue = document.createElement('p');
+    lastUpdateValue.textContent = new Date().toLocaleTimeString();
+    lastUpdateValue.classList.add('text-truncate', 'text-primary');
+    lastUpdateRow.appendChild(lastUpdateValue);
 
-    stopInfoRow.appendChild(busStopHeading);
-    stopInfoRow.appendChild(busNameHeading);
-    // Agregar el contenedor del título al elemento de la fila
-    row.appendChild(stopInfoRow)
-    row.appendChild(titleContainer);
-    container.appendChild(row);
+    cardBody.appendChild(stopRow);
+    cardBody.appendChild(routeRow);
+    cardBody.appendChild(timeRow);
+    cardBody.appendChild(lastUpdateRow);
+
+    card.appendChild(cardBody);
+    container.appendChild(card);
 }
-
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -237,5 +256,9 @@ document.addEventListener('DOMContentLoaded', () => {
     busNumber.addEventListener('input', e => {
         checkInput(busNumber);
         checkBusNumber(busNumber);
+    });
+
+    addStopBus.addEventListener('click', e =>{
+        agregarParada()
     });
 });
