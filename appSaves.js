@@ -1,73 +1,138 @@
 const container = document.querySelector('#stops');
 
 function retrieveAndDisplayData() {
-    // Obtener el número total de datos almacenados
     var count = localStorage.getItem("stopCount") || 0;
     count = parseInt(count);
 
-    // Iterar sobre los datos almacenados y crear una tarjeta por cada uno
     for (var i = 0; i < count; i++) {
-        // Obtener el JSON almacenado en localStorage
         var datosJSON = localStorage.getItem("DataSaved_" + i);
-
-        // Convertir el JSON de nuevo a un objeto JavaScript
         var datos = JSON.parse(datosJSON);
-
-        // Crear una tarjeta con los datos recuperados
         createCard(datos.value, datos.stop, datos.bus);
     }
 }
 
-function createCard(tagValue, stopNumberValue, busNumberValue, index) {
-    // Crear la estructura de la tarjeta
-    var card = document.createElement('div');
-    card.classList.add('card', 'mt-3');
+function createCard(routeName, busstop, busNumber) {
+    const card = document.createElement('div');
+    card.classList.add('card', 'p-2', 'mt-3');
 
-    // Crear el contenido de la tarjeta
-    var cardContent = document.createElement('div');
-    cardContent.classList.add('card-content');
+    // Función para crear una fila
+    function createRow() {
+        const row = document.createElement('div');
+        row.classList.add('row', 'd-flex', 'mt-1', 'text-center');
+        return row;
+    }
 
-    // Crear elementos para mostrar los datos
-    var tagElement = document.createElement('p');
-    tagElement.textContent = "Tag: " + tagValue;
+    // Función para crear una columna
+    function createCol(colValue) {
+        const col = document.createElement('div'); // Cambié 'createAttribute' a 'createElement'
+        col.classList.add(colValue, 'text-center');
+        return col;
+    }
 
-    var stopNumberElement = document.createElement('p');
-    stopNumberElement.textContent = "Stop Number: " + stopNumberValue;
+    // Función para crear un título
+    function createTitle(titleText) {
+        const title = document.createElement('p');
+        title.classList.add('fw-bold', 'me-2'); // Agregué 'me-2' para un espacio entre el título y el valor
+        title.textContent = titleText;
+        return title;
+    }
 
-    var busNumberElement = document.createElement('p');
-    busNumberElement.textContent = "Bus Number: " + busNumberValue;
+    // Función para crear un elemento de valor
+    function createValueElement(value) {
+        const element = document.createElement('p');
+        element.textContent = value;
+        return element;
+    }
 
-    // Agregar los elementos al contenido de la tarjeta
-    cardContent.appendChild(tagElement);
-    cardContent.appendChild(stopNumberElement);
-    cardContent.appendChild(busNumberElement);
+    // Crear elementos de fila
+    const deleteRow = createRow();
+    const tagRow = createRow();
+    const informationRow = createRow();
 
-    // Agregar el contenido a la tarjeta
-    card.appendChild(cardContent);
+    // Crear columnas para los títulos y valores
+    const infoTitleStop = createCol('col-6');
+    const infoValueStop = createCol('col-6');
+    const infoTitleNumber = createCol('col-6');
+    const infoValueNumber = createCol('col-6');
 
-    // Crear un botón para eliminar la parada
-    var deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('btn', 'btn-danger', 'mt-2');
-    deleteButton.addEventListener('click', function() {
-        deleteStop(index);
-        card.remove(); // Eliminar la tarjeta del DOM cuando se hace clic en el botón de eliminar
-    });
+    // Crear elementos de título
+    const tagTitle = createTitle("Route name: ")
 
-    // Agregar el botón de eliminar a la tarjeta
-    card.appendChild(deleteButton);
+    const busstopTitle = createTitle("Bus Stop: ");
+    const busNumberTitle = createTitle("Bus Number: ");
 
-    // Agregar la tarjeta al contenedor
+    // Crear elementos de valor
+    const tagValue = createValueElement(routeName);
+    const busstopValue = createValueElement(busstop);
+    const busNumberValue = createValueElement(busNumber);
+
+    // Agregar títulos y valores a las columnas correspondientes
+    infoTitleStop.appendChild(busstopTitle);
+    infoValueStop.appendChild(busstopValue);
+    infoTitleNumber.appendChild(busNumberTitle);
+    infoValueNumber.appendChild(busNumberValue);
+
+    // Agregar columnas a la fila de información
+    tagRow.appendChild(tagTitle);
+    tagRow.appendChild(tagValue);
+
+    informationRow.appendChild(infoTitleStop);
+    informationRow.appendChild(infoTitleNumber);
+    informationRow.appendChild(infoValueStop);
+    informationRow.appendChild(infoValueNumber);
+
+    // Agregar fila de información al card
+    card.appendChild(deleteRow);
+    card.appendChild(tagRow);
+    card.appendChild(informationRow);
+
+    // Agregar card al contenedor principal
     container.appendChild(card);
 }
 
+
+
 function deleteStop(index) {
-    // Eliminar el dato correspondiente al índice del localStorage
     localStorage.removeItem("DataSaved_" + index);
 }
 
+function addStop(busstop, busNumber, container) {
+    const apiKey = "B8Vq87yydqWBKKRPrmHb";
 
-// Llama a esta función cuando el DOM esté completamente cargado
+    const apiUrl = `https://api.translink.ca/rttiapi/v1/stops/${busstop}/estimates?apikey=${apiKey}&routeNo=${busNumber}`;
+
+    fetch(apiUrl, {
+        headers: {
+            "content-type": "application/json",
+            "accept": "application/json"
+        }
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (data && data.length > 0) {
+            const firstBus = data[0];
+            const routeName = firstBus.RouteName;
+            const firstBusSchedule = firstBus.Schedules[0];
+            const expectedLeaveTime = firstBusSchedule.ExpectedLeaveTime;
+            const busStatus = firstBusSchedule.ScheduleStatus;
+            const countDown = firstBusSchedule.ExpectedCountdown;
+
+            createCard(routeName, expectedLeaveTime, busStatus, countDown, busstop, busNumber); // Corregido: pasamos 'busstop' y 'busNumber' como argumentos
+            console.log(data)
+        } else {
+            alertMessages("Bus data was not found for the provided stop and route.", container, "danger");
+        }
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     retrieveAndDisplayData();
 });
