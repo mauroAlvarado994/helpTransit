@@ -9,6 +9,12 @@ const danger = document.querySelector('#alerts');
 
 
 function saveStop() {
+
+    if(tag.value === "" || stopNumber.value === "" || busNumber === ""){
+        alertMessages("Empty inputs you can't continue", danger, "danger");
+        return
+    }
+
     // Obtener el contador actual de paradas guardadas
     var count = localStorage.getItem("stopCount") || 0;
     count = parseInt(count);
@@ -30,6 +36,10 @@ function saveStop() {
     localStorage.setItem("stopCount", count + 1);
 
     alertMessages("Stop bus added to your list.", alert, "success");
+
+    tag.value = "";
+    stopNumber.value = "";
+    busNumber.value = "";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
