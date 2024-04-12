@@ -4,12 +4,12 @@ function ClearHTML(result) {
     }
 }
 
-function alertMessages(messages, container) {
+function alertMessages(messages, container, color) {
     ClearHTML(container);
 
     const alert = document.createElement('P');
     alert.textContent = messages;
-    alert.classList.add('text-danger', 'fw-bold', 'fs-6', 'mx-3', 'text-center');
+    alert.classList.add(`text-${color}`, 'fw-bold', 'fs-6', 'mx-3', 'text-center');
 
     container.appendChild(alert);
 
@@ -20,11 +20,11 @@ function alertMessages(messages, container) {
 
 function checkInput(input, container) {
     if (input.value.length < 1) {
-        alertMessages("This input is empty, please fill it to continue", container);
+        alertMessages("This input is empty, please fill it to continue", container, "danger");
     }
     
     if (isNaN(input.value)) {
-        alertMessages('This is not a number, you have to write a number to continue', container);
+        alertMessages('This is not a number, you have to write a number to continue', container, "danger");
         input.value = "";
     }
     return;
@@ -33,10 +33,10 @@ function checkInput(input, container) {
 function checkBusStop(input, container) {
     const value = input.value.trim();
     if (value.length < 5) {
-        alertMessages('The bus stop number must be at least 5 digits', container);
+        alertMessages('The bus stop number must be at least 5 digits', container, "danger");
         input.value = "";
     } else if (value.length > 5) {
-        alertMessages('The bus stop number cannot be more than 5 digits', container);
+        alertMessages('The bus stop number cannot be more than 5 digits', container, "danger");
         input.value = "";
     }
 
@@ -46,14 +46,14 @@ function checkBusStop(input, container) {
 function checkBusNumber(input, container) {
     const value = input.value.trim();
     if (value.length > 3) {
-        alertMessages('The bus number cannot be more than 3 digits', container);
+        alertMessages('The bus number cannot be more than 3 digits', container, "danger");
         input.value = "";
     }
 }
 
-function agregarParada(stop, number, container) {
+function addStop(stop, number, container) {
     if (stop.value.trim() === '' || number.value.trim() === '') {
-        alertMessages('Please fill all fields before adding a stop bus.', container);
+        alertMessages('Please fill all fields before adding a stop bus.', container, "danger");
         return;
     }
 
@@ -85,7 +85,7 @@ function agregarParada(stop, number, container) {
             createCard(routeName, expectedLeaveTime, busStatus, countDown, stop, number);
             console.log(data)
         } else {
-            alertMessages("Bus data was not found for the provided stop and route.", container);
+            alertMessages("Bus data was not found for the provided stop and route.", container, "danger");
         }
     })
     .catch(error => {
@@ -240,26 +240,9 @@ function createCard(routeName, expectedLeaveTime, busStatus, countDown, stop, nu
     container.appendChild(card);
 }
 
-function guardarEnLocalStorage() {
-    // Obtener los valores de los elementos HTML
-    var valorInput = document.getElementById("valorInput").value;
-    var numeroParada = document.getElementById("numeroParada").value;
-    var numeroBus = document.getElementById("numeroBus").value;
-
-    // Crear un objeto con los valores
-    var datos = {
-        valor: valorInput,
-        parada: numeroParada,
-        bus: numeroBus
-    };
-
-    // Convertir el objeto a JSON
-    var datosJSON = JSON.stringify(datos);
-
-    // Guardar en localStorage
-    localStorage.setItem("datosGuardados", datosJSON);
-
-    alert("Datos guardados en localStorage.");
+function dontEmpty(input, container){
+    if(input.value.length <= 0 ){
+        alertMessages("this input can't be empty", container, "danger")
+    }
 }
-
-export {ClearHTML, alertMessages, checkInput, checkBusStop, checkBusNumber, agregarParada}
+export {ClearHTML, alertMessages, checkInput, checkBusStop, checkBusNumber, addStop, dontEmpty}

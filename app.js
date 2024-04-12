@@ -1,4 +1,4 @@
-import { checkInput, checkBusStop, checkBusNumber, agregarParada} from "/functions.js"
+import { checkInput, checkBusStop, checkBusNumber, addStop} from "/functions.js"
 
 const busStop = document.querySelector("#bStop");
 const busNumber = document.querySelector("#bNumber");
@@ -22,6 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addStopBus.addEventListener('click', e =>{
-        agregarParada(busStop, busNumber, message)
+        addStop(busStop, busNumber, message)
     });
 });
