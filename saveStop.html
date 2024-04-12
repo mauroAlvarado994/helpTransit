@@ -50,11 +50,16 @@
         <div class="card-header">
             <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item col-9">
-                    <a class="nav-link active" href="/saveStop.html">Add stop bus to your list</a>
+                    <a class="nav-link active bg-info" href="/index.html">Consult a stop bus</a>
                 </li>
             </ul>
             <div class="card-body">
-                <h3 class="card-title">Consult your bus trip</h3>
+                <h3 class="card-title">Add this stop to your list</h3>
+                <div class="row m-2">
+                    <p>Tag</p>
+                    <input type="text" id="tag">
+                </div>
+
                 <div class="row m-2">
                     <p>Bus stop</p>
                     <input type="text" id="bStop">
@@ -68,7 +73,7 @@
                 <div class="mt-2 bm-2" id="alerts"></div>
         
                 <div class="container-fluid d-flex text-center mt-2 gap-2">
-                    <button type="button" class="btn btn-info text-white col-12" id="btnAddStop">Consult Stop</button>
+                    <button type="button" class="btn btn-primary col-12" id="btnAddStop">Add stop to the list</button>
                 </div>
     
             </div>
@@ -95,6 +100,6 @@
     </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="app.js" type="module"></script>
+        <script src="app.js"></script>
 </body>
 </html>

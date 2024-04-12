@@ -246,6 +246,28 @@ function createCard(routeName, expectedLeaveTime, busStatus, countDown) {
     container.appendChild(card);
 }
 
+function guardarEnLocalStorage() {
+    // Obtener los valores de los elementos HTML
+    var valorInput = document.getElementById("valorInput").value;
+    var numeroParada = document.getElementById("numeroParada").value;
+    var numeroBus = document.getElementById("numeroBus").value;
+
+    // Crear un objeto con los valores
+    var datos = {
+        valor: valorInput,
+        parada: numeroParada,
+        bus: numeroBus
+    };
+
+    // Convertir el objeto a JSON
+    var datosJSON = JSON.stringify(datos);
+
+    // Guardar en localStorage
+    localStorage.setItem("datosGuardados", datosJSON);
+
+    alert("Datos guardados en localStorage.");
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     busStop.addEventListener('input', e => {
