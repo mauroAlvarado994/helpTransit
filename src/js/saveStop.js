@@ -1,4 +1,4 @@
-import{alertMessages, checkInput, checkBusStop, checkBusNumber, dontEmpty} from "/functions.js";
+import{alertMessages, checkInput, checkBusStop, checkBusNumber, dontEmpty} from "/src/js/functions.js";
 
 const tag = document.querySelector('#tag');
 const stopNumber = document.querySelector('#bStop');
@@ -30,7 +30,7 @@ function saveStop() {
     var datosJSON = JSON.stringify(datos);
 
     // Guardar en localStorage con una clave única
-    localStorage.setItem("DataSaved_" + count, datosJSON);
+    localStorage.setItem("DataSaved_" + Date.now(), datosJSON);
 
     // Incrementar el contador de paradas guardadas
     localStorage.setItem("stopCount", count + 1);

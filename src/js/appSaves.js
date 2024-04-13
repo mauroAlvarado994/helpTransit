@@ -1,18 +1,27 @@
 const container = document.querySelector('#stops');
 
 function retrieveAndDisplayData() {
+    // Obtener el contador actual de paradas guardadas
     var count = localStorage.getItem("stopCount") || 0;
     count = parseInt(count);
 
-    for (var i = 0; i < count; i++) {
-        var datosJSON = localStorage.getItem("DataSaved_" + i);
-        var datos = JSON.parse(datosJSON);
-        createCard(datos.value, datos.stop, datos.bus);
+    // Iterar sobre las claves del localStorage para buscar las que coinciden con el patrón "DataSaved_"
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key.startsWith("DataSaved_")) {
+            var datosJSON = localStorage.getItem(key);
+            var datos = JSON.parse(datosJSON);
+            createCard(datos.value, datos.stop, datos.bus, key);
+        }
     }
 }
 
-function createCard(routeName, busstop, busNumber) {
+
+function createCard(routeName, busstop, busNumber, key) {
+    const id = key
+
     const card = document.createElement('div');
+    card.id = id
     card.classList.add('card', 'p-2', 'mt-3');
 
     // Función para crear una fila
@@ -44,10 +53,11 @@ function createCard(routeName, busstop, busNumber) {
         return element;
     }
 
-    function createBtn(text, color,) {
+    function createBtn(text, color, clickHandler) {
         const button = document.createElement('button');
         button.textContent = text;
         button.classList.add('btn', color, 'w-100');
+        button.addEventListener('click', clickHandler);
         return button;
     }
 
@@ -66,7 +76,7 @@ function createCard(routeName, busstop, busNumber) {
     const consultCol = createCol('col-10');
 
     // Crear elementos de título
-    const deleteBtn = createBtn("x", "btn-light"); // Botón de eliminar
+    const deleteBtn = createBtn("x", "btn-light", () => deleteCardAndData(id, card)); // Botón de eliminar
     const tagTitle = createTitle("Route name: ");
     const busstopTitle = createTitle("Bus Stop: ");
     const busNumberTitle = createTitle("Bus Number: ");
@@ -109,11 +119,15 @@ function createCard(routeName, busstop, busNumber) {
     container.appendChild(card);
 }
 
+function deleteCardAndData(id, card) {
+    // Restar 1 a count
+    var count = localStorage.getItem("stopCount") || 0;
+    count = parseInt(count);
+    localStorage.setItem("stopCount", count - 1);
 
-
-
-function deleteStop(index) {
-    localStorage.removeItem("DataSaved_" + index);
+    // Eliminar el elemento del almacenamiento local y remover la tarjeta del DOM
+    localStorage.removeItem(id);
+    card.remove();
 }
 
 function addStop(busstop, busNumber, container) {

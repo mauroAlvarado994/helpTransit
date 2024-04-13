@@ -1,4 +1,4 @@
-import { checkInput, checkBusStop, checkBusNumber, addStop} from "/functions.js"
+import { checkInput, checkBusStop, checkBusNumber, addStop} from "/src/js/functions.js"
 
 const busStop = document.querySelector("#bStop");
 const busNumber = document.querySelector("#bNumber");
