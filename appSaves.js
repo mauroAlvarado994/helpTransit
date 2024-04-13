@@ -23,9 +23,9 @@ function createCard(routeName, busstop, busNumber) {
     }
 
     // Función para crear una columna
-    function createCol(colValue) {
+    function createCol(colValue, space) {
         const col = document.createElement('div');
-        col.classList.add(colValue, 'text-center');
+        col.classList.add(colValue, 'text-center', space);
         return col;
     }
 
@@ -47,7 +47,7 @@ function createCard(routeName, busstop, busNumber) {
     function createBtn(text, color,) {
         const button = document.createElement('button');
         button.textContent = text;
-        button.classList.add('btn', color);
+        button.classList.add('btn', color, 'w-100');
         return button;
     }
 
@@ -58,7 +58,7 @@ function createCard(routeName, busstop, busNumber) {
     const consultRow = createRow();
 
     // Crear columnas para los títulos y valores
-    const deleteCol = createCol('col-2');
+    const deleteCol = createCol('col-2', 'offset-10');
     const infoTitleStop = createCol('col-6');
     const infoValueStop = createCol('col-6');
     const infoTitleNumber = createCol('col-6');
