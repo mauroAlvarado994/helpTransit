@@ -18,13 +18,13 @@ function createCard(routeName, busstop, busNumber) {
     // Función para crear una fila
     function createRow() {
         const row = document.createElement('div');
-        row.classList.add('row', 'd-flex', 'mt-1', 'text-center');
+        row.classList.add('row', 'd-flex', 'mt-1', 'text-center', 'justify-content-center');
         return row;
     }
 
     // Función para crear una columna
     function createCol(colValue) {
-        const col = document.createElement('div'); // Cambié 'createAttribute' a 'createElement'
+        const col = document.createElement('div');
         col.classList.add(colValue, 'text-center');
         return col;
     }
@@ -32,7 +32,7 @@ function createCard(routeName, busstop, busNumber) {
     // Función para crear un título
     function createTitle(titleText) {
         const title = document.createElement('p');
-        title.classList.add('fw-bold', 'me-2'); // Agregué 'me-2' para un espacio entre el título y el valor
+        title.classList.add('fw-bold', 'me-2');
         title.textContent = titleText;
         return title;
     }
@@ -44,27 +44,41 @@ function createCard(routeName, busstop, busNumber) {
         return element;
     }
 
+    function createBtn(text, color,) {
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.classList.add('btn', color);
+        return button;
+    }
+
     // Crear elementos de fila
     const deleteRow = createRow();
     const tagRow = createRow();
     const informationRow = createRow();
+    const consultRow = createRow();
 
     // Crear columnas para los títulos y valores
+    const deleteCol = createCol('col-2');
     const infoTitleStop = createCol('col-6');
     const infoValueStop = createCol('col-6');
     const infoTitleNumber = createCol('col-6');
     const infoValueNumber = createCol('col-6');
+    const consultCol = createCol('col-10');
 
     // Crear elementos de título
-    const tagTitle = createTitle("Route name: ")
-
+    const deleteBtn = createBtn("x", "btn-light"); // Botón de eliminar
+    const tagTitle = createTitle("Route name: ");
     const busstopTitle = createTitle("Bus Stop: ");
     const busNumberTitle = createTitle("Bus Number: ");
+    const consultBtn = createBtn("Consult", "btn-info"); // Botón de consulta
 
     // Crear elementos de valor
     const tagValue = createValueElement(routeName);
     const busstopValue = createValueElement(busstop);
     const busNumberValue = createValueElement(busNumber);
+
+    // Agregar botón de eliminar a la columna correspondiente
+    deleteCol.appendChild(deleteBtn);
 
     // Agregar títulos y valores a las columnas correspondientes
     infoTitleStop.appendChild(busstopTitle);
@@ -72,23 +86,29 @@ function createCard(routeName, busstop, busNumber) {
     infoTitleNumber.appendChild(busNumberTitle);
     infoValueNumber.appendChild(busNumberValue);
 
-    // Agregar columnas a la fila de información
+    // Agregar botón de consulta a la columna correspondiente
+    consultCol.appendChild(consultBtn);
+
+    // Agregar columnas a las filas correspondientes
+    deleteRow.appendChild(deleteCol);
     tagRow.appendChild(tagTitle);
     tagRow.appendChild(tagValue);
-
     informationRow.appendChild(infoTitleStop);
     informationRow.appendChild(infoTitleNumber);
     informationRow.appendChild(infoValueStop);
     informationRow.appendChild(infoValueNumber);
+    consultRow.appendChild(consultCol);
 
-    // Agregar fila de información al card
+    // Agregar filas al card
     card.appendChild(deleteRow);
     card.appendChild(tagRow);
     card.appendChild(informationRow);
+    card.appendChild(consultRow);
 
     // Agregar card al contenedor principal
     container.appendChild(card);
 }
+
 
 
 
