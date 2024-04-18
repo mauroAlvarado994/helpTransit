@@ -249,7 +249,7 @@ function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, bu
 
     setTimeout(() => {
         card.remove();
-    }, 15000);
+    }, 60000);
 }
 
 
