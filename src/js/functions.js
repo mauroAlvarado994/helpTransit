@@ -245,4 +245,4 @@ function dontEmpty(input, container){
         alertMessages("this input can't be empty", container, "danger")
     }
 }
-export {ClearHTML, alertMessages, checkInput, checkBusStop, checkBusNumber, addStop, dontEmpty}
+export {ClearHTML, alertMessages, checkInput, checkBusStop, checkBusNumber, addStop, dontEmpty, getStatusDescription, getColorForStatus}

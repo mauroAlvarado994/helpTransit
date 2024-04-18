@@ -1,4 +1,4 @@
-import { ClearHTML, alertMessages } from "/src/js/functions.js";
+import { getStatusDescription, getColorForStatus } from "/src/js/functions.js";
 
 const container = document.querySelector('#stops');
 
@@ -71,7 +71,7 @@ function createCard(routeName, busstop, busNumber, key) {
     const consultCol = createCol('col-10');
 
     const deleteBtn = createBtn("x", "btn-light", () => deleteCardAndData(id, card));
-    const tagTitle = createTitle("Route name: ");
+    const tagTitle = createTitle("Route TAG: ");
     const busstopTitle = createTitle("Bus Stop: ");
     const busNumberTitle = createTitle("Bus Number: ");
     const consultBtn = createBtn("Consult", "btn-info", () => addStop(busstop, busNumber, id));
@@ -145,13 +145,14 @@ function addStop(busstop, busNumber, containerId) {
             consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, busNumber, containerId);
             console.log(data)
         } else {
-            alertMessages("Bus data was not found for the provided stop and route.", containerId, "danger");
+            alert("Bus data was not found for the provided stop and route.");
         }
     })
     .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+        alert('There was a problem with the fetch operation: ' + error.message);
     });
 }
+
 
 function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, busNumber, containerId){
 
@@ -160,20 +161,97 @@ function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, bu
     // Limpiar el contenido del contenedor
     container.innerHTML = "";
 
-    const card = document.createElement('Div');
-    card.classList.add('col-10','card', 'text-center', 'mt-2');
-    card.id = containerId;
+    const card = document.createElement('div');
+    card.classList.add('col-11','card', 'mt-3');
 
-    const deletRow = createRow();
-    const deleteCol = createCol('col-2', 'offset-10');
-    const deleteBtn = createBtn("x", "btn-light");
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
 
-    deleteCol.appendChild(deleteBtn);    
-    deletRow.appendChild(deleteCol)    
-    card.appendChild(deletRow);
+    const routeRow = document.createElement('div');
+    routeRow.classList.add('row', 'text-center');
 
+    const routeLabel = document.createElement('p');
+    routeLabel.textContent = 'Route Name:';
+    routeLabel.classList.add('fw-bold')
+    routeRow.appendChild(routeLabel);
+
+    const routeValue = document.createElement('p');
+    routeValue.textContent = routeName;
+    routeValue.classList.add('text-truncate', 'text-primary');
+    routeRow.appendChild(routeValue);
+
+    const timeRow = document.createElement('div');
+    timeRow.classList.add('row', 'text-center');
+
+    const netBusCol = document.createElement('div');
+    netBusCol.classList.add('col-4');
+
+    const netBusLabel = document.createElement('p');
+    netBusLabel.textContent = 'Next Bus:';
+    netBusLabel.classList.add('fw-bold')
+    netBusCol.appendChild(netBusLabel);
+
+    const netBusValue = document.createElement('p');
+    const horaSalida = expectedLeaveTime.split(" ")[0]; // Aquí se extrae solo la hora
+    netBusValue.textContent = horaSalida;
+    netBusValue.classList.add('text-truncate', 'text-primary');
+    netBusCol.appendChild(netBusValue);
+
+    const statusCol = document.createElement('div');
+    statusCol.classList.add('col-4');
+
+    const statusLabel = document.createElement('p');
+    statusLabel.textContent = 'Bus Status:';
+    statusLabel.classList.add('fw-bold')
+    statusCol.appendChild(statusLabel);
+
+    const statusValue = document.createElement('p');
+    statusValue.textContent = getStatusDescription(busStatus);
+    statusValue.classList.add(`${getColorForStatus(busStatus)}`)
+    statusCol.appendChild(statusValue);
+
+    const timeLeftCol = document.createElement('div');
+    timeLeftCol.classList.add('col-4');
+
+    const timeLeftLabel = document.createElement('p');
+    timeLeftLabel.textContent = 'Time Left:';
+    timeLeftLabel.classList.add('fw-bold')
+    timeLeftCol.appendChild(timeLeftLabel);
+
+    const timeLeftValue = document.createElement('p');
+    timeLeftValue.textContent = `${countDown} Min`;
+    timeLeftValue.classList.add('text-truncate', 'text-primary');
+    timeLeftCol.appendChild(timeLeftValue);
+
+    timeRow.appendChild(netBusCol);
+    timeRow.appendChild(statusCol);
+    timeRow.appendChild(timeLeftCol);
+
+    const lastUpdateRow = document.createElement('div');
+    lastUpdateRow.classList.add('row', 'text-center');
+
+    const lastUpdateLabel = document.createElement('p');
+    lastUpdateLabel.textContent = 'Last Update:';
+    lastUpdateLabel.classList.add('fw-bold')
+    lastUpdateRow.appendChild(lastUpdateLabel);
+
+    const lastUpdateValue = document.createElement('p');
+    lastUpdateValue.textContent = new Date().toLocaleTimeString();
+    lastUpdateValue.classList.add('text-truncate', 'text-primary');
+    lastUpdateRow.appendChild(lastUpdateValue);
+
+    cardBody.appendChild(routeRow);
+    cardBody.appendChild(timeRow);
+    cardBody.appendChild(lastUpdateRow);
+
+    card.appendChild(cardBody);
     container.appendChild(card);
+
+    setTimeout(() => {
+        card.remove();
+    }, 15000);
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     retrieveAndDisplayData();
