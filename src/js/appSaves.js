@@ -1,3 +1,5 @@
+import { ClearHTML, alertMessages } from "/src/js/functions.js";
+
 const container = document.querySelector('#stops');
 
 function retrieveAndDisplayData() {
@@ -14,9 +16,10 @@ function retrieveAndDisplayData() {
     }
 }
 
-function createRow() {
+function createRow(id) {
     const row = document.createElement('div');
     row.classList.add('row', 'd-flex', 'mt-1', 'text-center', 'justify-content-center');
+    row.id = id
     return row;
 }
 
@@ -58,6 +61,7 @@ function createCard(routeName, busstop, busNumber, key) {
     const tagRow = createRow();
     const informationRow = createRow();
     const consultRow = createRow();
+    const resultRow = createRow("RES" + key);
 
     const deleteCol = createCol('col-2', 'offset-10');
     const infoTitleStop = createCol('col-6');
@@ -98,6 +102,7 @@ function createCard(routeName, busstop, busNumber, key) {
     card.appendChild(tagRow);
     card.appendChild(informationRow);
     card.appendChild(consultRow);
+    card.appendChild(resultRow);
 
     container.appendChild(card);
 }
@@ -149,8 +154,14 @@ function addStop(busstop, busNumber, containerId) {
 }
 
 function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, busNumber, containerId){
+
+    const container = document.getElementById("RES" + containerId);
+
+    // Limpiar el contenido del contenedor
+    container.innerHTML = "";
+
     const card = document.createElement('Div');
-    card.classList.add('card', 'text-center', 'mt-2');
+    card.classList.add('col-10','card', 'text-center', 'mt-2');
     card.id = containerId;
 
     const deletRow = createRow();
@@ -161,7 +172,6 @@ function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, bu
     deletRow.appendChild(deleteCol)    
     card.appendChild(deletRow);
 
-    const container = document.getElementById(containerId);
     container.appendChild(card);
 }
 
