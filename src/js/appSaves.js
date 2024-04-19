@@ -102,14 +102,30 @@ function createCard(routeName, busstop, busNumber, key) {
     container.appendChild(card);
 }
 
-function deleteCardAndData(id, card) {
-    var count = localStorage.getItem("stopCount") || 0;
-    count = parseInt(count);
-    localStorage.setItem("stopCount", count - 1);
+function deleteCardAndData(id) {
+    // Obtener el array de paradas guardadas del almacenamiento local
+    const savedStops = JSON.parse(localStorage.getItem("savedStops")) || [];
 
-    localStorage.removeItem(id);
-    card.remove();
+    // Buscar el índice del elemento en el array que tiene el mismo ID que se pasa a la función
+    const index = savedStops.findIndex(stop => stop.id === id);
+
+    // Verificar si se encontró el elemento con el ID proporcionado
+    if (index !== -1) {
+        // Eliminar el elemento del array usando su índice
+        savedStops.splice(index, 1);
+        // Guardar el array actualizado en el almacenamiento local
+        localStorage.setItem("savedStops", JSON.stringify(savedStops));
+
+        // Obtener la tarjeta del DOM utilizando su ID
+        const card = document.getElementById(id);
+        // Si la tarjeta existe, eliminarla del DOM
+        if (card) {
+            card.remove();
+        }
+    }
 }
+
+
 
 function addStop(busstop, busNumber, containerId) {
     const apiKey = "B8Vq87yydqWBKKRPrmHb";
