@@ -3,18 +3,13 @@ import { getStatusDescription, getColorForStatus } from "/src/js/functions.js";
 const container = document.querySelector('#stops');
 
 function retrieveAndDisplayData() {
-    var count = localStorage.getItem("stopCount") || 0;
-    count = parseInt(count);
+    const savedStops = JSON.parse(localStorage.getItem("savedStops")) || [];
 
-    for (var i = 0; i < localStorage.length; i++) {
-        var key = localStorage.key(i);
-        if (key.startsWith("DataSaved_")) {
-            var datosJSON = localStorage.getItem(key);
-            var datos = JSON.parse(datosJSON);
-            createCard(datos.value, datos.stop, datos.bus, key);
-        }
-    }
+    savedStops.forEach(stop => {
+        createCard(stop.value, stop.stop, stop.bus, stop.id);
+    });
 }
+
 
 function createRow(id) {
     const row = document.createElement('div');
@@ -156,10 +151,10 @@ function addStop(busstop, busNumber, containerId) {
 
 function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, busNumber, containerId){
 
-    const container = document.getElementById("RES" + containerId);
+    const resultContainer = document.getElementById("RES" + containerId);
 
     // Limpiar el contenido del contenedor
-    container.innerHTML = "";
+    resultContainer.innerHTML = "";
 
     const card = document.createElement('div');
     card.classList.add('col-11','card', 'mt-3');
@@ -245,7 +240,7 @@ function consult(routeName, expectedLeaveTime, busStatus, countDown, busstop, bu
     cardBody.appendChild(lastUpdateRow);
 
     card.appendChild(cardBody);
-    container.appendChild(card);
+    resultContainer.appendChild(card);
 
     setTimeout(() => {
         card.remove();

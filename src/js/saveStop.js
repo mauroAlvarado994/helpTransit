@@ -44,34 +44,43 @@ function checkStopValidity(stop, number, callback) {
 }
 
 function saveStop() {
-    if (tag.value === "" || stopNumber.value === "" || busNumber === "") {
-        alertMessages("Empty inputs you can't continue", danger, "danger");
+    if (stopNumber.value === "" || busNumber.value === "") {
+        alertMessages("Empty inputs, you can't continue", alert, "danger");
         return;
     }
 
+    const savedStops = JSON.parse(localStorage.getItem("savedStops")) || [];
+
+    // Verificar si ya existe una parada de autobús con el mismo número de parada y número de autobús
+    const existingStop = savedStops.find(stop => {
+        return stop.stop === stopNumber.value && stop.bus === busNumber.value;
+    });
+
+    if (existingStop) {
+        alertMessages("This bus stop is already saved.", container, "danger");
+        stopNumber.value = "";
+        busNumber.value = "";
+        return;
+    }
+
+    // Si no se encuentra una parada de autobús con el mismo nombre y número, continuar con la verificación de la parada de autobús
     checkStopValidity(stopNumber.value, busNumber.value, function(valid) {
         if (valid) {
-            // Obtener el contador actual de paradas guardadas
-            var count = localStorage.getItem("stopCount") || 0;
-            count = parseInt(count);
-
             // Crear un objeto con los valores
-            var datos = {
+            var newStop = {
                 value: tag.value,
                 stop: stopNumber.value,
-                bus: busNumber.value
+                bus: busNumber.value,
+                id: "Card_" + Date.now()
             };
 
-            // Convertir el objeto a JSON
-            var datosJSON = JSON.stringify(datos);
+            // Agregar la nueva parada al array
+            savedStops.push(newStop);
 
-            // Guardar en localStorage con una clave única
-            localStorage.setItem("DataSaved_" + Date.now(), datosJSON);
+            // Guardar el array actualizado en el almacenamiento local
+            localStorage.setItem("savedStops", JSON.stringify(savedStops));
 
-            // Incrementar el contador de paradas guardadas
-            localStorage.setItem("stopCount", count + 1);
-
-            alertMessages("Stop bus added to your list.", alert, "success");
+            alertMessages("Stop bus added to your list.", container, "success");
 
             tag.value = "";
             stopNumber.value = "";
