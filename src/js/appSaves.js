@@ -5,9 +5,17 @@ const container = document.querySelector('#stops');
 function retrieveAndDisplayData() {
     const savedStops = JSON.parse(localStorage.getItem("savedStops")) || [];
 
-    savedStops.forEach(stop => {
-        createCard(stop.value, stop.stop, stop.bus, stop.id);
-    });
+    if (savedStops.length === 0) {
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('alert', 'alert-warning', 'text-center');
+        messageContainer.setAttribute('role', 'alert');
+        messageContainer.textContent = "You don't have stop saved yet.";
+        container.appendChild(messageContainer);
+    } else {
+        savedStops.forEach(stop => {
+            createCard(stop.value, stop.stop, stop.bus, stop.id);
+        });
+    }
 }
 
 
@@ -103,22 +111,17 @@ function createCard(routeName, busstop, busNumber, key) {
 }
 
 function deleteCardAndData(id) {
-    // Obtener el array de paradas guardadas del almacenamiento local
+
     const savedStops = JSON.parse(localStorage.getItem("savedStops")) || [];
 
-    // Buscar el índice del elemento en el array que tiene el mismo ID que se pasa a la función
     const index = savedStops.findIndex(stop => stop.id === id);
 
-    // Verificar si se encontró el elemento con el ID proporcionado
     if (index !== -1) {
-        // Eliminar el elemento del array usando su índice
         savedStops.splice(index, 1);
-        // Guardar el array actualizado en el almacenamiento local
         localStorage.setItem("savedStops", JSON.stringify(savedStops));
 
-        // Obtener la tarjeta del DOM utilizando su ID
         const card = document.getElementById(id);
-        // Si la tarjeta existe, eliminarla del DOM
+
         if (card) {
             card.remove();
         }
